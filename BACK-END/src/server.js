@@ -7,6 +7,8 @@ import productoRoutes from './Routes/E-ProductStoreRoutes.js';
 import usuarioRoutes from './Routes/A-usuario.routes.js';
 import publicacionRoutes from './Routes/A-publicacion.routes.js';
 import favoritoRoutes from './Routes/A-favorito.routes.js';
+import commentsRoutes from './Routes/E-commentsForumRoutes.js';
+
 
 const servidorKefex = express(); 
 
@@ -15,6 +17,8 @@ servidorKefex.use(morgan("dev"));
 servidorKefex.use(express.json());
 
 // Registro de las rutas en la API
+
+servidorKefex.use('/api/comments', commentsRoutes);
 servidorKefex.use('/api/productos', productoRoutes);
 servidorKefex.use('/api/usuarios', usuarioRoutes);
 servidorKefex.use('/api/publicaciones', publicacionRoutes);

@@ -2,13 +2,7 @@
 import mongoose from "mongoose";
 
 const comentarioForoSchema = new mongoose.Schema({
-  // Relación con el post del foro al que pertenece
-  opinionId: { 
-    type: mongoose.Schema.Types.ObjectId, 
-    ref: "Opinion", 
-    required: true,
-    index: true 
-  },
+  
   autor: {
     nombre: { type: String, required: true },
     avatar: { type: String, default: "https://i.pravatar.cc/150" },

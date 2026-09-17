@@ -7,12 +7,12 @@ import {
     eliminarProducto 
 } from "../Controller/E-productStoreController.js"; 
 
-const router = Router();
+const routerProduct = Router();
 
-router.post('/', crearProducto);
-router.get('/', obtenerProductos);
-router.get('/:id', obtenerProductoPorId);
-router.put('/:id', actualizarProducto);
-router.delete('/:id', eliminarProducto);
+routerProduct.post('/', crearProducto);
+routerProduct.get('/', obtenerProductos);
+routerProduct.get('/:id', obtenerProductoPorId);
+routerProduct.put('/:id', actualizarProducto);
+routerProduct.delete('/:id', eliminarProducto);
 
-export default router;
+export default routerProduct;
