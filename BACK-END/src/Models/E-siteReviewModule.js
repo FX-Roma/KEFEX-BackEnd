@@ -1,42 +1,41 @@
-/* Modulo para el e commerce del dia */
 import mongoose from "mongoose";
 
-const siteEvaluatedSchema = new mongoose.Schema({
-  nombre: { 
+const siteReviewSchema = new mongoose.Schema({
+  name: { 
     type: String, 
-    required: true, 
+    required: [true, "Site name is required"], 
     unique: true, 
     trim: true 
   },
-  urlOficial: { 
+  officialUrl: { 
     type: String, 
-    required: true, 
+    required: [true, "Official URL is required"], 
     trim: true 
   },
   logo: { 
     type: String, 
     default: "" 
   },
-  descripcion: { 
+  description: { 
     type: String, 
     trim: true 
   },
-  ratingPromedio: { 
+  averageRating: { 
     type: Number, 
     min: 0, 
     max: 5, 
     default: 0 
   },
-  totalOpiniones: { 
+  totalOpinions: { 
     type: Number, 
     default: 0 
   },
-  categoria: { 
+  category: { 
     type: String, 
-    enum: ["ecommerce", "marketplace", "tienda_oficial"],
+    enum: ["ecommerce", "marketplace", "official_store"],
     default: "ecommerce"
   },
-  esSitioDelDia: { 
+  isFeaturedSite: { 
     type: Boolean, 
     default: false 
   }
@@ -44,4 +43,4 @@ const siteEvaluatedSchema = new mongoose.Schema({
   timestamps: true 
 });
 
-export default mongoose.model("Sitio", sitioSchema);
+export default mongoose.model("SiteReview", siteReviewSchema);

@@ -1,13 +1,62 @@
+import bcrypt from "bcryptjs";
 import Usuario from "../Models/A-usuario.model.js";
 
-// Crear un nuevo usuario
 const crearUsuario = async (req, res) => {
     try {
-        const nuevoUsuario = await Usuario.create(req.body);
+        const {
+            nombre,
+            username,
+            correo,
+            contraseña,
+            contrasena,
+            foto,
+            ciudad,
+            biografia,
+            rol
+        } = req.body;
+
+        const password = contraseña ?? contrasena;
+
+        if (!nombre || !username || !correo || !password) {
+            return res.status(400).json({
+                mensaje: "nombre, username, correo y contraseña son obligatorios"
+            });
+        }
+
+        // Verificar duplicados
+        const existe = await Usuario.findOne({
+            $or: [
+                { correo: correo.toLowerCase().trim() },
+                { username: username.trim() }
+            ]
+        });
+
+        if (existe) {
+            return res.status(409).json({
+                mensaje: "El correo o username ya están registrados"
+            });
+        }
+
+        const hash = await bcrypt.hash(password, 12);
+
+        const nuevoUsuario = await Usuario.create({
+            nombre: nombre.trim(),
+            username: username.trim(),
+            correo: correo.toLowerCase().trim(),
+            contraseña: hash,
+            foto: foto || null,
+            ciudad: ciudad || "",
+            biografia: biografia || "",
+            rol: rol === "admin" ? "admin" : "usuario"
+        });
+
+        // Omitir la contraseña en la respuesta
+        const usuarioRespuesta = nuevoUsuario.toObject();
+        delete usuarioRespuesta.contraseña;
 
         res.status(201).json({
             mensaje: "Usuario creado correctamente",
-            usuario: nuevoUsuario
+            usuario: usuarioRespuesta
         });
 
     } catch (error) {
@@ -18,11 +67,9 @@ const crearUsuario = async (req, res) => {
     }
 };
 
-
-// Obtener todos los usuarios
 const obtenerUsuarios = async (req, res) => {
     try {
-        const usuarios = await Usuario.find();
+        const usuarios = await Usuario.find().select("-contraseña");
 
         res.status(200).json({
             usuarios
@@ -36,11 +83,9 @@ const obtenerUsuarios = async (req, res) => {
     }
 };
 
-
-// Obtener un usuario por ID
 const obtenerUsuarioPorId = async (req, res) => {
     try {
-        const usuario = await Usuario.findById(req.params.id);
+        const usuario = await Usuario.findById(req.params.id).select("-contraseña");
 
         if (!usuario) {
             return res.status(404).json({
@@ -60,18 +105,33 @@ const obtenerUsuarioPorId = async (req, res) => {
     }
 };
 
-
-// Actualizar un usuario
 const actualizarUsuario = async (req, res) => {
     try {
+        const datosActualizar = { ...req.body };
+
+        // Manejar contraseña si se envía en la actualización
+        const password = datosActualizar.contraseña ?? datosActualizar.contrasena;
+        if (password) {
+            datosActualizar.contraseña = await bcrypt.hash(password, 12);
+            delete datosActualizar.contrasena;
+        }
+
+        if (datosActualizar.correo) {
+            datosActualizar.correo = datosActualizar.correo.toLowerCase().trim();
+        }
+
+        if (datosActualizar.username) {
+            datosActualizar.username = datosActualizar.username.trim();
+        }
+
         const usuario = await Usuario.findByIdAndUpdate(
             req.params.id,
-            req.body,
+            datosActualizar,
             {
                 new: true,
                 runValidators: true
             }
-        );
+        ).select("-contraseña");
 
         if (!usuario) {
             return res.status(404).json({
@@ -92,8 +152,6 @@ const actualizarUsuario = async (req, res) => {
     }
 };
 
-
-// Eliminar un usuario
 const eliminarUsuario = async (req, res) => {
     try {
         const usuario = await Usuario.findByIdAndDelete(req.params.id);
@@ -116,8 +174,6 @@ const eliminarUsuario = async (req, res) => {
     }
 };
 
-
-// Exportar las funciones
 export {
     crearUsuario,
     obtenerUsuarios,

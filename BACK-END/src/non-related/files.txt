@@ -9,7 +9,7 @@ BACK-END/
     ├── server.js                 # Configuración de Express, middlewares y rutas globales
     ├── connection.js             # Conexión a la base de datos MongoDB con Mongoose
     │
-    ├── models/                   # Definición de Schemas de MongoDB (Mongoose)
+    ├── models/                   # Definición de Sc      6Y5T4REDF   de MongoDB (Mongoose)
     │   ├── usuario.model.js      # (Andrés) Campos: nombre, username, correo, contraseña, foto, ciudad, biografía, rol, estado
     │   ├── producto.model.js     # (Kevin) Campos: nombre, descripción, precio, categoría, imagen, stock, valoración
     │   ├── publicacion.model.js  # (Andrés) Campos: autor, contenido, video/imagen, categoría, fecha

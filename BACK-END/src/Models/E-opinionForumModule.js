@@ -1,38 +1,37 @@
-/* opiniones dentro del foro */
 import mongoose from "mongoose";
 
-const productoAsociadoSchema = new mongoose.Schema({
-  nombre: { type: String, required: true, trim: true },
-  marca: { type: String, required: true, trim: true },
-  precio: { type: String, required: true, trim: true },
-  imagen: { type: String, default: "" },
+const attachedProductSchema = new mongoose.Schema({
+  name: { type: String, required: true, trim: true },
+  brand: { type: String, required: true, trim: true },
+  price: { type: String, required: true, trim: true },
+  image: { type: String, default: "" },
   officialUrl: { type: String, required: true, trim: true }
 }, { _id: false });
 
-const opinionSchema = new mongoose.Schema({
-  titulo: { 
+const forumOpinionSchema = new mongoose.Schema({
+  title: { 
     type: String, 
-    required: [true, "El título es obligatorio"], 
+    required: [true, "Title is required"], 
     trim: true,
     index: true 
   },
   opinion: { 
     type: String, 
-    required: [true, "El contenido de la opinión es obligatorio"], 
+    required: [true, "Opinion content is required"], 
     trim: true 
   },
-  extracto: { 
+  excerpt: { 
     type: String, 
     trim: true 
   },
-  categoria: { 
+  category: { 
     type: String, 
-    required: [true, "La categoría es obligatoria"],
-    enum: ["ecommerce", "tecnologia", "moda", "hogar", "gaming", "belleza", "supermercado", "marketplace"],
+    required: [true, "Category is required"],
+    enum: ["ecommerce", "technology", "fashion", "home", "gaming", "beauty", "supermarket", "marketplace"],
     default: "ecommerce",
     index: true
   },
-  categoriaLabel: { 
+  categoryLabel: { 
     type: String, 
     default: "E-commerce" 
   },
@@ -50,14 +49,13 @@ const opinionSchema = new mongoose.Schema({
     type: Number, 
     default: 0 
   },
-  // Referencia del que creó la publicación
-  autor: {
-    nombre: { type: String, required: true },
+  author: {
+    name: { type: String, required: true },
     avatar: { type: String, default: "https://i.pravatar.cc/150" },
-    usuarioId: { type: mongoose.Schema.Types.ObjectId, ref: "Usuario" }
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: "Usuario" }
   },
   product: { 
-    type: productoAsociadoSchema, 
+    type: attachedProductSchema, 
     required: false 
   },
   isUserPost: { 
@@ -68,7 +66,6 @@ const opinionSchema = new mongoose.Schema({
   timestamps: true 
 });
 
-// Índice de texto para la API de Búsqueda (Over)
-opinionSchema.index({ titulo: "text", opinion: "text", categoria: "text" });
+forumOpinionSchema.index({ title: "text", opinion: "text", category: "text" });
 
-export default mongoose.model("Opinion", opinionSchema);
+export default mongoose.model("ForumOpinion", forumOpinionSchema);
